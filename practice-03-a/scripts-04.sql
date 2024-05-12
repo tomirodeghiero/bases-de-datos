@@ -43,16 +43,19 @@ INSERT INTO Deporte (codigo_deporte, denominacion) VALUES
 -- **Álgebra Relacional:**
 -- \[ \pi_{nombre} (\sigma_{denominacion='FUTBOL'} (Deporte) \bowtie Competidor) \]
 
-SELECT Competidor.nombre
-FROM Competidor
-JOIN Deporte ON Competidor.codigo_deporte = Deporte.codigo_deporte
-WHERE Deporte.denominacion = 'FUTBOL';
+SELECT nombre
+FROM ejercicio4.competidor
+JOIN ejercicio4.deporte ON competidor.cod_deporte = deporte.cod_deporte
+WHERE deporte.denominacion = 'FUTBOL';
 
 -- b) Países que han competido y no ganaron ninguna medalla.
 
 -- **Álgebra Relacional:**
 -- \[ \pi_{pais} (Competencia) - \pi_{pais} (Medalla) \]
 
-SELECT DISTINCT pais
-FROM Competencia
-WHERE pais NOT IN (SELECT DISTINCT pais FROM Medalla);
+SELECT DISTINCT competicion.pais
+FROM ejercicio4.competicion
+WHERE competicion.pais NOT IN (
+  SELECT DISTINCT medalla.pais
+  FROM ejercicio4.medalla
+);

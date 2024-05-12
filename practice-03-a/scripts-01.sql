@@ -63,42 +63,43 @@ INSERT INTO ItemFactura (cod_producto, nro_factura, cantidad, precio) VALUES
 
 -- a) Consulta de productos con precio superior a $15000.
 SELECT *
-FROM Producto
-WHERE precio > 15000;
+FROM ejercicio1.producto
+WHERE precio > 1500;
 
 -- b) Productos vendidos más de 2 unidades en alguna factura.
-SELECT cod_producto, descripción
-FROM Producto
+SELECT cod_producto, descripcion
+FROM ejercicio1.producto
 WHERE cod_producto IN (
     SELECT cod_producto
-    FROM ItemFactura
+    FROM ejercicio1.itemfactura
     GROUP BY cod_producto
     HAVING SUM(cantidad) > 2
 );
 
 -- c) Clientes sin ventas asociadas.
 SELECT *
-FROM Cliente
+FROM ejercicio1.cliente
 WHERE nro_cliente NOT IN (
     SELECT DISTINCT nro_cliente
-    FROM Factura
+    FROM ejercicio1.factura
 );
 
 -- d) Productos que nunca se vendieron.
 SELECT *
-FROM Producto
+FROM ejercicio1.producto
 WHERE cod_producto NOT IN (
     SELECT DISTINCT cod_producto
-    FROM ItemFactura
+    FROM ejercicio1.itemfactura
 );
 
 -- e) Clientes con ventas, pero sin detalles en Factura.
-SELECT *
-FROM Cliente
-WHERE nro_cliente IN (
-    SELECT nro_cliente
-    FROM Factura
-    EXCEPT
-    SELECT nro_cliente
-    FROM ItemFactura
-);
+SELECT 
+    c.NRO_CLIENTE, 
+    c.APELLIDO, 
+    c.NOMBRE, 
+    f.NRO_FACTURA, 
+    f.FECHA, 
+    f.MONTO
+FROM ejercicio1.cliente c
+LEFT JOIN ejercicio1.factura f ON c.NRO_CLIENTE = f.NRO_CLIENTE
+ORDER BY c.NRO_CLIENTE;

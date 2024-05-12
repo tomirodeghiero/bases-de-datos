@@ -44,37 +44,43 @@ INSERT INTO Realiza (nro_alumno, codigo_taller) VALUES
 (3, 103);
 
 -- Consultas propuestas (Álgebra Relacional y SQL)
--- a) Listar todos los alumnos que no están inscritos en talleres.
+-- a, b) 1. Listar todos los alumnos y los talleres que realizan. Si un alumno no realiza ningún taller, debe aparecer sin taller asociado.
 
 -- **Álgebra Relacional:**
--- \[ \pi_{nro\_alumno, nombre} (Alumno) - \pi_{nro\_alumno, nombre} (Alumno \bowtie Realiza) \]
+-- π nombre,apellido,nombre_taller (Alumno ⋈ Realiza ⋈ Taller)
 
 -- **SQL:**
-SELECT nro_alumno, nombre
-FROM Alumno
-WHERE nro_alumno NOT IN (SELECT nro_alumno FROM Realiza);
+SELECT alumno.nombre, alumno.apellido, taller.nombre as nombre_taller
+FROM ejercicio3.alumno
+LEFT JOIN ejercicio3.realiza ON alumno.nro_alumno = realiza.nro_alumno
+LEFT JOIN ejercicio3.taller ON realiza.codigo_taller = taller.codigo_taller;
 
--- b) Listar los nombres de todos los talleres junto con los nombres de los alumnos inscritos. Incluir talleres sin alumnos.
+-- 2. Listar los nombres de los alumnos que están inscriptos en el taller 'Cocina' pero no en el taller 'Reparacion de PC'.
 
 -- **Álgebra Relacional:**
--- \[ Taller \leftouterjoin Realiza \bowtie Alumno \]
+-- \[\pi_{nombre}((Alumno \bowtie \sigma_{nombre\_taller='Cocina'}(Realiza \bowtie Taller)) - (Alumno \bowtie \sigma_{nombre\_taller='Reparacion de PC'}(Realiza \bowtie Taller)))\]
 
 -- **SQL:**
-SELECT T.nombre, A.nombre AS alumno_nombre
-FROM Taller T
-LEFT JOIN Realiza R ON T.codigo_taller = R.codigo_taller
-LEFT JOIN Alumno A ON R.nro_alumno = A.nro_alumno;
+SELECT DISTINCT alumno.nombre
+FROM ejercicio3.alumno
+JOIN ejercicio3.realiza ON alumno.nro_alumno = realiza.nro_alumno
+JOIN ejercicio3.taller ON realiza.codigo_taller = taller.codigo_taller
+WHERE taller.nombre = 'Cocina'
+AND alumno.nro_alumno NOT IN (
+    SELECT alumno.nro_alumno
+    FROM ejercicio3.alumno
+    JOIN ejercicio3.realiza ON alumno.nro_alumno = realiza.nro_alumno
+    JOIN ejercicio3.taller ON realiza.codigo_taller = taller.codigo_taller
+    WHERE taller.nombre = 'Reparacion de PC'
+);
 
--- c) Listar todos los talleres y los alumnos que no participan en cada taller.
+-- 3. Listar la cantidad de talleres por alumno.
 
 -- **Álgebra Relacional:**
 -- \[ Taller \times Alumno - \pi_{codigo\_taller, nro\_alumno} (Realiza) \]
 
 -- **SQL:**
-SELECT T.codigo_taller, T.nombre, A.nro_alumno, A.nombre
-FROM Taller T
-CROSS JOIN Alumno A
-WHERE NOT EXISTS (
-    SELECT 1 FROM Realiza R
-    WHERE R.codigo_taller = T.codigo_taller AND R.nro_alumno = A.nro_alumno
-);
+SELECT alumno.nro_alumno, alumno.nombre, alumno.apellido, alumno.dni, alumno.sexo, COUNT(realiza.codigo_taller) AS num_talleres
+FROM ejercicio3.alumno
+JOIN ejercicio3.realiza ON alumno.nro_alumno = realiza.nro_alumno
+GROUP BY alumno.nro_alumno, alumno.nombre, alumno.apellido, alumno.dni, alumno.sexo;

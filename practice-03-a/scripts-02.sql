@@ -44,15 +44,17 @@ INSERT INTO Participacion (id_club, id_competencia, puesto) VALUES
 
 -- a) Listar las competencias cuya categoría es mayor a 2.
 SELECT *
-FROM Competencia
-WHERE categoria > 2;
+FROM competencia
+WHERE "CATEGORIA" > 2;
 
 -- b) Listar clubes que participaron en las competencias cuya categoría es 2.
-SELECT DISTINCT Club.*
-FROM Club
-JOIN Participacion ON Club.id_club = Participacion.id_club
-JOIN Competencia ON Participacion.id_competencia = Competencia.id_competencia
-WHERE Competencia.categoria = 2;
+SELECT DISTINCT 
+    c."NRO_CLUB", 
+    c."NOMBRE_CLUB"
+FROM ejercicio2.club c
+JOIN ejercicio2.participacion p ON c."NRO_CLUB" = p."NRO_CLUB"
+JOIN ejercicio2.competencia co ON p."NRO_COMPETENCIA" = co."NRO_COMPETENCIA"
+WHERE co."CATEGORIA" = 2;
 
 -- c) Listar los nombres de los clubes que participaron en competencias cuya categoría es 2.
 SELECT DISTINCT Club.nombre_club
