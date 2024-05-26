@@ -66,23 +66,25 @@ SELECT *
 FROM ejercicio1.producto
 WHERE precio > 1500;
 
--- b) Productos vendidos más de 2 unidades en alguna factura.
+-- b) Productos vendidos más de 2 unidades en alguna factura ordenadas por descripción.
 SELECT cod_producto, descripcion
 FROM ejercicio1.producto
 WHERE cod_producto IN (
     SELECT cod_producto
     FROM ejercicio1.itemfactura
-    GROUP BY cod_producto
+    GROUP BY cod_producto, nro_factura
     HAVING SUM(cantidad) > 2
-);
+)
+ORDER BY descripcion;
 
--- c) Clientes sin ventas asociadas.
+-- c) Clientes sin ventas asociadas ordenadas por apellido y nombre.
 SELECT *
 FROM ejercicio1.cliente
 WHERE nro_cliente NOT IN (
     SELECT DISTINCT nro_cliente
     FROM ejercicio1.factura
-);
+)
+ORDER BY apellido DESC, nombre DESC;
 
 -- d) Productos que nunca se vendieron.
 SELECT *
@@ -97,6 +99,8 @@ SELECT
     c.NRO_CLIENTE, 
     c.APELLIDO, 
     c.NOMBRE, 
+    c.DIRECCION,
+    c.TELEFONO,
     f.NRO_FACTURA, 
     f.FECHA, 
     f.MONTO

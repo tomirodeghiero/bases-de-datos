@@ -22,7 +22,7 @@ CREATE TABLE vacunas (
 );
 
 CREATE TABLE personas (
-    dni INTEGER PRIMARY KEY,
+    dni INTEGER PRIMARY KEY CHECK (dni > 0),
     nombre VARCHAR(45),
     edad INTEGER CHECK (edad >= 21),
     municipio INTEGER,

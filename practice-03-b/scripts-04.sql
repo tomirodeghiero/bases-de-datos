@@ -6,7 +6,7 @@ ALTER TABLE vacunados DROP CONSTRAINT IF EXISTS vacunados_dni_fkey;
 -- Asegúrate de tener las tablas `personas`, `municipios` y `vacunas` ya creadas como se muestra en ejemplos anteriores
 
 CREATE TABLE IF NOT EXISTS personas (
-    dni INTEGER PRIMARY KEY,
+    dni INTEGER PRIMARY KEY CHECK (dni > 0),
     nombre VARCHAR(45),
     edad INTEGER CHECK (edad >= 21),
     municipio INTEGER,
